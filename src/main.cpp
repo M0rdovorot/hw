@@ -22,7 +22,11 @@ int main(int argc, char* argv[]){
 
   try{
     if (!file_artist.is_open() || !file_artist_type.is_open() || !file_gender.is_open()){
-      throw "Wrong path.";
+      std::cout << "Wrong path.";
+      file_artist.close();
+      file_artist_type.close();
+      file_gender.close();
+      return 0;
     }
     CountedArtists count = CountMalesOrFemalesByYear(file_artist, file_artist_type, file_gender, year);
     std::cout << "Number of male artists - " << count.males << ", number of female artists - " << count.females << std::endl;
