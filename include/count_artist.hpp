@@ -9,6 +9,13 @@ struct сounted_аrtists_t{
   int females;
 };
 
+struct artist{
+  std::string begin_year;
+  std::string end_year;
+  std::string id_gender;
+  std::string id_artist;
+};
+
 int CountColumns(std::string& str);
 
 void FindMaleAndFemaleId(std::string& id_male, std::string& id_female, std::istream& file_gender);

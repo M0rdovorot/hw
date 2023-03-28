@@ -63,10 +63,7 @@ void FindArtistID(std::string& id_artist, std::istream& file_artist_type){
 
 std::string CheckArtist(std::string& id_male, std::string& id_female, std::string& id_artist, std::string& year, std::istream& str){
   int tab_counter = 0;
-  std::string tmp_begin_year = "";
-  std::string tmp_end_year = "";
-  std::string tmp_id_gender = "";
-  std::string tmp_id_artist = "";
+  artist tmp_artist = {"", "", "", ""};
   std::string tmp = "";
 
   while (getline(str, tmp, '\t'))
@@ -74,35 +71,35 @@ std::string CheckArtist(std::string& id_male, std::string& id_female, std::strin
     tab_counter++;
     switch (tab_counter){
       case 5:
-        tmp_begin_year = tmp;
+        tmp_artist.begin_year = tmp;
         break;
       case 8:
-        tmp_end_year = tmp;
+        tmp_artist.end_year = tmp;
         break;
       case 11:
-        tmp_id_artist = tmp;
+        tmp_artist.id_artist = tmp;
         break;
       case 13:
-        tmp_id_gender = tmp;
+        tmp_artist.id_gender = tmp;
         break;
     }
     if (tab_counter > 13)
       break;
   }
 
-  if (tmp_id_artist != id_artist){
+  if (tmp_artist.id_artist != id_artist){
     return "";
   }
 
-  if (tmp_begin_year.size() != 4){
+  if (tmp_artist.begin_year.size() != 4){
     return "";
   }
 
-  if (stoi(tmp_begin_year) <= stoi(year) && (tmp_end_year.size() != 4 || stoi(tmp_end_year) >= stoi(year))){
-    if (tmp_id_gender == id_male){
+  if (stoi(tmp_artist.begin_year) <= stoi(year) && (tmp_artist.end_year.size() != 4 || stoi(tmp_artist.end_year) >= stoi(year))){
+    if (tmp_artist.id_gender == id_male){
       return "Male";
     }
-    if (tmp_id_gender == id_female){
+    if (tmp_artist.id_gender == id_female){
       return "Female";
     }
     return "";
