@@ -24,7 +24,7 @@ void FindMaleAndFemaleId(std::string& id_male, std::string& id_female, std::istr
     if (male_find_flag && female_find_flag)
       break;
 
-    if(CountColumns(tmp) != 6){
+    if(CountColumns(tmp) != ARTIST_GENDER_FILE_COLUMNS){
       throw "Wrong gender format file.";
     }
 
@@ -48,7 +48,7 @@ void FindArtistID(std::string& id_artist, std::istream& file_artist_type){
   bool artist_type_find_flag = false;
 
   while(getline(file_artist_type, tmp)){
-    if (CountColumns(tmp) != 6){
+    if (CountColumns(tmp) != ARTIST_TYPE_FILE_COLUMNS){
       throw "Wrong artist type format file.";
     }
 
@@ -63,27 +63,27 @@ void FindArtistID(std::string& id_artist, std::istream& file_artist_type){
 
 std::string CheckArtist(std::string& id_male, std::string& id_female, std::string& id_artist, std::string& year, std::istream& str){
   int tab_counter = 0;
-  artist tmp_artist = {"", "", "", ""};
+  artist_t tmp_artist = {"", "", "", ""};
   std::string tmp = "";
 
   while (getline(str, tmp, '\t'))
   {
     tab_counter++;
     switch (tab_counter){
-      case 5:
+      case ARTIST_BEGIN_YEAR_COLUMN:
         tmp_artist.begin_year = tmp;
         break;
-      case 8:
+      case ARTIST_END_YEAR_COLUMN:
         tmp_artist.end_year = tmp;
         break;
-      case 11:
+      case ARTIST_TYPE_COLUMN:
         tmp_artist.id_artist = tmp;
         break;
-      case 13:
+      case ARTIST_GENDER_COLUMN:
         tmp_artist.id_gender = tmp;
         break;
     }
-    if (tab_counter > 13)
+    if (tab_counter > ARTIST_GENDER_COLUMN)
       break;
   }
 
@@ -91,11 +91,11 @@ std::string CheckArtist(std::string& id_male, std::string& id_female, std::strin
     return "";
   }
 
-  if (tmp_artist.begin_year.size() != 4){
+  if (tmp_artist.begin_year.size() != CORRECT_NUMBER_OF_YEAR){
     return "";
   }
 
-  if (stoi(tmp_artist.begin_year) <= stoi(year) && (tmp_artist.end_year.size() != 4 || stoi(tmp_artist.end_year) >= stoi(year))){
+  if (stoi(tmp_artist.begin_year) <= stoi(year) && (tmp_artist.end_year.size() != CORRECT_NUMBER_OF_YEAR || stoi(tmp_artist.end_year) >= stoi(year))){
     if (tmp_artist.id_gender == id_male){
       return "Male";
     }
@@ -121,7 +121,7 @@ std::string CheckArtist(std::string& id_male, std::string& id_female, std::strin
   std::string tmp;
 
   while(getline(file_artist, tmp)){
-    if (!correct_flag && CountColumns(tmp) != 19){
+    if (!correct_flag && CountColumns(tmp) != ARTIST_FILE_COLUMNS){
       throw "Wrong artist file format.";
     }
     else{

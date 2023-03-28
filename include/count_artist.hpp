@@ -4,12 +4,25 @@
 #include <fstream>
 #include <string>
 
+#define ARTIST_TYPE_FILE_COLUMNS 6
+#define ARTIST_FILE_COLUMNS 19
+#define ARTIST_GENDER_FILE_COLUMNS 6
+
+#define ARTIST_BEGIN_YEAR_COLUMN 5
+#define ARTIST_END_YEAR_COLUMN 8
+#define ARTIST_TYPE_COLUMN 11
+#define ARTIST_GENDER_COLUMN 13
+
+#define CORRECT_NUMBER_OF_YEAR 4
+
+
+
 struct сounted_аrtists_t{
   int males;
   int females;
 };
 
-struct artist{
+struct artist_t{
   std::string begin_year;
   std::string end_year;
   std::string id_gender;
