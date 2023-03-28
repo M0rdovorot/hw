@@ -20,9 +20,8 @@ void FindMaleAndFemaleId(std::string& id_male, std::string& id_female, std::istr
   bool male_find_flag = false;
   bool female_find_flag = false;
 
-  while(getline(file_gender, tmp)){
-    if (male_find_flag && female_find_flag)
-      break;
+  while(getline(file_gender, tmp) && (!male_find_flag || !female_find_flag)){
+
 
     if(CountColumns(tmp) != ARTIST_GENDER_FILE_COLUMNS){
       throw "Wrong gender format file.";
