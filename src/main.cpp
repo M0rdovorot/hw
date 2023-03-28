@@ -20,21 +20,23 @@ int main(int argc, char* argv[]){
   std::ifstream file_artist_type(artist_type_path);
   std::ifstream file_gender(gender_path);
 
+  if (!file_artist.is_open() || !file_artist_type.is_open() || !file_gender.is_open()){
+    std::cout << "Wrong path.";
+    file_artist.close();
+    file_artist_type.close();
+    file_gender.close();
+    return 0;
+  }
+
   try{
-    if (!file_artist.is_open() || !file_artist_type.is_open() || !file_gender.is_open()){
-      std::cout << "Wrong path.";
-      file_artist.close();
-      file_artist_type.close();
-      file_gender.close();
-      return 0;
-    }
-    CountedArtists count = CountMalesOrFemalesByYear(file_artist, file_artist_type, file_gender, year);
+    сounted_аrtists_t count = CountMalesOrFemalesByYear(file_artist, file_artist_type, file_gender, year);
     std::cout << "Number of male artists - " << count.males << ", number of female artists - " << count.females << std::endl;
   }
   catch(const char* error_message)
   {
     std::cout << error_message << std::endl;
   }
+
   file_artist.close();
   file_artist_type.close();
   file_gender.close();

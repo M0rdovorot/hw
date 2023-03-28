@@ -23,18 +23,22 @@ void FindMaleAndFemaleId(std::string& id_male, std::string& id_female, std::istr
   while(getline(file_gender, tmp)){
     if (male_find_flag && female_find_flag)
       break;
+
     if(CountColumns(tmp) != 6){
       throw "Wrong gender format file.";
     }
+
     if (tmp.find("Male") != -1){
       male_find_flag = true;
       id_male = tmp.substr(0, tmp.find('\t'));
     }
+
     if (tmp.find("Female") != -1){
       female_find_flag = true;
       id_female = tmp.substr(0, tmp.find('\t'));
     }
   }
+
   if (!male_find_flag && !female_find_flag)
     throw "Wrong gender format file.";
 }
@@ -44,19 +48,17 @@ void FindArtistID(std::string& id_artist, std::istream& file_artist_type){
   bool artist_type_find_flag = false;
 
   while(getline(file_artist_type, tmp)){
-    if (artist_type_find_flag){
-      break;
-    }
     if (CountColumns(tmp) != 6){
       throw "Wrong artist type format file.";
     }
-    if (tmp.find("Person") != std::string::npos){
+
+    if (tmp.find("Person") != -1){
       id_artist = tmp.substr(0, tmp.find('\t'));
-      artist_type_find_flag = true;
+      return;
     }
   }
-  if (!artist_type_find_flag)
-    throw "Wrong artist type format file.";
+
+  throw "Wrong artist type format file.";
 }
 
 std::string CheckArtist(std::string& id_male, std::string& id_female, std::string& id_artist, std::string& year, std::istream& str){
@@ -70,23 +72,32 @@ std::string CheckArtist(std::string& id_male, std::string& id_female, std::strin
   while (getline(str, tmp, '\t'))
   {
     tab_counter++;
-    if (tab_counter == 5)
-      tmp_begin_year = tmp;
-    if (tab_counter == 8)
-      tmp_end_year = tmp;
-    if (tab_counter == 11)
-      tmp_id_artist = tmp;
-    if (tab_counter == 13)
-      tmp_id_gender = tmp;
+    switch (tab_counter){
+      case 5:
+        tmp_begin_year = tmp;
+        break;
+      case 8:
+        tmp_end_year = tmp;
+        break;
+      case 11:
+        tmp_id_artist = tmp;
+        break;
+      case 13:
+        tmp_id_gender = tmp;
+        break;
+    }
     if (tab_counter > 13)
       break;
   }
+
   if (tmp_id_artist != id_artist){
     return "";
   }
+
   if (tmp_begin_year.size() != 4){
     return "";
   }
+
   if (stoi(tmp_begin_year) <= stoi(year) && (tmp_end_year.size() != 4 || stoi(tmp_end_year) >= stoi(year))){
     if (tmp_id_gender == id_male){
       return "Male";
@@ -99,7 +110,7 @@ std::string CheckArtist(std::string& id_male, std::string& id_female, std::strin
   return "";
 }
 
-CountedArtists CountMalesOrFemalesByYear(std::istream& file_artist, std::istream& file_artist_type, std::istream& file_gender, std::string& year){
+сounted_аrtists_t CountMalesOrFemalesByYear(std::istream& file_artist, std::istream& file_artist_type, std::istream& file_gender, std::string& year){
   std::string id_male = "";
   std::string id_female = "";
   std::string id_artist = "";
@@ -119,9 +130,10 @@ CountedArtists CountMalesOrFemalesByYear(std::istream& file_artist, std::istream
     else{
       correct_flag = true;
     }
+
     std::istringstream tmp_stream(tmp);
-    
     tmp = CheckArtist(id_male, id_female, id_artist, year, tmp_stream);
+
     if (tmp == "Male")
       male_counter++;
     if (tmp == "Female"){

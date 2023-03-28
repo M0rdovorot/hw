@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-struct CountedArtists{
+struct сounted_аrtists_t{
   int males;
   int females;
 };
@@ -17,5 +17,5 @@ void FindArtistID(std::string& id_artist, std::istream& file_artist_type);
 
 std::string CheckArtist(std::string& id_male, std::string& id_female, std::string& id_artist, std::string& year, std::istream& str);
 
-CountedArtists CountMalesOrFemalesByYear(std::istream& file_artist, std::istream& file_artist_type,
+сounted_аrtists_t CountMalesOrFemalesByYear(std::istream& file_artist, std::istream& file_artist_type,
                                               std::istream& file_gender, std::string& year);
