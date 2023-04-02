@@ -11,7 +11,7 @@ public:
   virtual double Calculate(); 
   ICalculatable();//?
   explicit ICalculatable(double);
-  ICalculatable(ICalculatable&);
+  explicit ICalculatable(int);
   double getValue();
 };
 
@@ -45,20 +45,20 @@ public:
   virtual double Calculate();
 };
 
-class atan: public ICalculatable
+class Atan: public ICalculatable
 {
   private:
   std::unique_ptr<ICalculatable> operand_;
 public:
-  atan(std::unique_ptr<ICalculatable>);
+  Atan(std::unique_ptr<ICalculatable>);
   virtual double Calculate();
 };
 
-class abs: public ICalculatable
+class Abs: public ICalculatable
 {
   private:
   std::unique_ptr<ICalculatable> operand_;
 public:
-  abs(std::unique_ptr<ICalculatable>);
+  Abs(std::unique_ptr<ICalculatable>);
   virtual double Calculate();
 };

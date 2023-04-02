@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 
 #include "calculator.hpp"
 #include "parsing.hpp"
@@ -10,7 +11,9 @@ int main(int argc, char* argv[]){
   }
   std::string expression = argv[1];
   try{
-    std::cout << ConvertToPostfix(expression) << std::endl;
+    std::istringstream postfix_expression(ConvertToPostfix(expression));
+    auto root = std::make_unique<ICalculatable>(MakeTree(postfix_expression));
+    std::cout << root->Calculate() << std::endl;
   }
   catch(const char* error_message){
     std::cout << "ERROR: " << error_message << std::endl;

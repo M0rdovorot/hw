@@ -4,7 +4,7 @@ ICalculatable::ICalculatable(){};
 
 ICalculatable::ICalculatable(double value): value_(value) {};
 
-ICalculatable::ICalculatable(ICalculatable& object): value_(object.value_) {};
+ICalculatable::ICalculatable(int value): value_((double)value){};
 
 double ICalculatable::getValue()
 {
@@ -54,24 +54,24 @@ double Divide::Calculate()
 
 
 
-atan::atan(std::unique_ptr<ICalculatable> operand):
+Atan::Atan(std::unique_ptr<ICalculatable> operand):
  operand_(std::move(operand))
 {
 }
 
-double atan::Calculate()
+double Atan::Calculate()
 {
   return std::atan(operand_->Calculate());
 }
 
 
 
-abs::abs(std::unique_ptr<ICalculatable> operand):
+Abs::Abs(std::unique_ptr<ICalculatable> operand):
  operand_(std::move(operand))
 {
 }
 
-double abs::Calculate()
+double Abs::Calculate()
 {
   return std::abs(operand_->Calculate());
 }
