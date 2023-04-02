@@ -1,28 +1,77 @@
-
-
 #include "calculator.hpp"
 
-class ICalculatable
-{
-private:
-  double value_;
-public:
-  virtual double Calculate() = 0; 
-  explicit ICalculatable(double value): value_(value) {};
-  ICalculatable(ICalculatable& object): value_(object.value_) {};
-};
+ICalculatable::ICalculatable(){};
 
-class Plus
+ICalculatable::ICalculatable(double value): value_(value) {};
+
+ICalculatable::ICalculatable(ICalculatable& object): value_(object.value_) {};
+
+double ICalculatable::getValue()
 {
-private:
-  /* data */
-public:
-  Plus(/* args */);
-  Plus();
-};
- Plus:: Plus(/* args */)
+  return value_;
+}
+
+double ICalculatable::Calculate()
+{
+  return value_;
+}
+
+
+
+Plus::Plus(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand):
+ left_operand_(std::move(left_operand)), right_operand_(std::move(right_operand))
 {
 }
- Plus:: Plus()
+
+double Plus::Calculate()
 {
+  return left_operand_->Calculate() + right_operand_->Calculate();
+}
+
+
+
+Minus::Minus(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand):
+ left_operand_(std::move(left_operand)), right_operand_(std::move(right_operand))
+{
+}
+
+double Minus::Calculate()
+{
+  return left_operand_->Calculate() - right_operand_->Calculate();
+}
+
+
+
+Divide::Divide(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand):
+ left_operand_(std::move(left_operand)), right_operand_(std::move(right_operand))
+{
+}
+
+double Divide::Calculate()
+{
+  return left_operand_->Calculate() / right_operand_->Calculate();
+}
+
+
+
+atan::atan(std::unique_ptr<ICalculatable> operand):
+ operand_(std::move(operand))
+{
+}
+
+double atan::Calculate()
+{
+  return std::atan(operand_->Calculate());
+}
+
+
+
+abs::abs(std::unique_ptr<ICalculatable> operand):
+ operand_(std::move(operand))
+{
+}
+
+double abs::Calculate()
+{
+  return std::abs(operand_->Calculate());
 }
