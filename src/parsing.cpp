@@ -29,6 +29,10 @@ std::string ConvertToPostfix(std::string infix){
       operation_stack.push(tmp);
       tmp = "";
     }
+    if (tmp == "abs"){
+      operation_stack.push(tmp);
+      tmp = "";
+    }
 
     if (pos < infix.size()){
       switch (infix[pos]){
@@ -75,81 +79,69 @@ std::string ConvertToPostfix(std::string infix){
 }
 
 std::unique_ptr<ICalculatable> MakeTree(std::istream& expression){
-  std::stack<ICalculatable> operands_stack;
+  std::stack<std::unique_ptr<ICalculatable>> operands_stack;
   int pos = 0;
   std::string tmp;
 
   while (getline(expression, tmp, ' '))
   {
     if (std::isdigit(tmp[0])){
-      operands_stack.push(static_cast<ICalculatable>(stoi(tmp)));
+      operands_stack.push(std::make_unique<ICalculatable>(stoi(tmp)));
       continue;
     }
     switch (tmp[0])
     {
       case '+':
       {
-        auto right_operand = std::make_unique<ICalculatable>(ICalculatable(operands_stack.top()));
+        auto right_operand = std::move(operands_stack.top());
         operands_stack.pop();
-        auto left_operand = std::make_unique<ICalculatable>(ICalculatable(operands_stack.top()));
+        auto left_operand = std::move(operands_stack.top());
         operands_stack.pop();
-        if (left_operand.get() == nullptr) 
-          std::cout << "Left LOL\n"; 
-        else {
-          std::cout << "here1\n";
-        }
-        if (right_operand) std::cout << "Right LOL\n"; else std::cout << "here2\n";
-        Plus plus(std::move(left_operand), std::move(right_operand));
-        //std::cout << plus.Calculate() << std::endl;
-        operands_stack.push(plus);
+        auto plus = std::make_unique<Plus>(Plus(std::move(left_operand), std::move(right_operand)));
+        operands_stack.push(std::move(plus));
         break;
       }
 
       case '-':
       {
-        auto right_operand = std::make_unique<ICalculatable>(operands_stack.top());
+        auto right_operand = std::move(operands_stack.top());
         operands_stack.pop();
-        auto left_operand = std::make_unique<ICalculatable>(operands_stack.top());
+        auto left_operand = std::move(operands_stack.top());
         operands_stack.pop();
-        Minus minus(std::move(left_operand), std::move(right_operand));
-        operands_stack.push(minus);
+        auto minus = std::make_unique<Minus>(Minus(std::move(left_operand), std::move(right_operand)));
+        operands_stack.push(std::move(minus));
         break;
       }
 
       case '/':
       {
-        auto right_operand = std::make_unique<ICalculatable>(operands_stack.top());
+        auto right_operand = std::move(operands_stack.top());
         operands_stack.pop();
-        auto left_operand = std::make_unique<ICalculatable>(operands_stack.top());
+        auto left_operand = std::move(operands_stack.top());
         operands_stack.pop();
-        Divide divide(std::move(left_operand), std::move(right_operand));
-        operands_stack.push(divide);
+        auto divide = std::make_unique<Divide>(Divide(std::move(left_operand), std::move(right_operand)));
+        operands_stack.push(std::move(divide));
         break;
       }
       case 'a':
       {
         if (tmp == "arctg"){
-          auto operand = std::make_unique<ICalculatable>(operands_stack.top());
+          auto operand = std::move(operands_stack.top());
           operands_stack.pop();
-          Atan arctg(std::move(operand));
-          operands_stack.push(arctg);
+          auto arctg = std::make_unique<Atan>(Atan(std::move(operand)));
+          operands_stack.push(std::move(arctg));
           break;
         }
         if (tmp == "abs"){
-          auto operand = std::make_unique<ICalculatable>(operands_stack.top());
+          auto operand = std::move(operands_stack.top());
           operands_stack.pop();
-          Abs absolute(std::move(operand));
-          operands_stack.push(absolute);
+          auto absolute = std::make_unique<Abs>(Abs(std::move(operand)));
+          operands_stack.push(std::move(absolute));
           break;
         }
       }
     }
   }
   
-  //std::unique_ptr<Plus> root = std::dynamic_pointer_cast<std::unique_ptr<Plus>>(std::make_unique<ICalculatable>(operands_stack.top()));
-  auto root = std::make_unique<ICalculatable>(operands_stack.top());
-  std::cout << operands_stack.top().Calculate() << std::endl;
-  //std::cout << root.get()->Calculate() << std::endl;
-  //return std::move(root);
-  return std::move(root);
+  return std::move(operands_stack.top());
 }
