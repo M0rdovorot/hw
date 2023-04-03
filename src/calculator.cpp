@@ -16,8 +16,6 @@ double ICalculatable::Calculate()
   return value_;
 }
 
-
-
 Plus::Plus(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand):
  left_operand_(std::move(left_operand)), right_operand_(std::move(right_operand))
 {
@@ -38,6 +36,18 @@ Minus::Minus(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalcu
 double Minus::Calculate()
 {
   return left_operand_->Calculate() - right_operand_->Calculate();
+}
+
+
+
+UnaryMinus::UnaryMinus(std::unique_ptr<ICalculatable> operand):
+ operand_(std::move(operand))
+{
+}
+
+double UnaryMinus::Calculate()
+{
+  return -operand_->Calculate();
 }
 
 

@@ -1,5 +1,6 @@
 #include "parsing.hpp"
 #include "calculator.hpp"
+#include "operations.hpp"
 
 std::string ConvertToPostfix(std::string infix){
   std::map<std::string, int> operation_priority = {
@@ -7,7 +8,9 @@ std::string ConvertToPostfix(std::string infix){
     {"+", OPERATION_PLUS_PRIORITY}, 
     {"-", OPERATION_MINUS_PRIORITY}, 
     {"/", OPERATION_DIVIDE_PRIORITY}, 
-    {"arctg", OPERATION_ARCTG_PRIORITY}
+    {"arctg", OPERATION_ARCTG_PRIORITY},
+    {"abs", OPERATION_ABS_PRIORITY},
+    {"~", OPERATION_UNARY_MINUS_PRIORITY}
   };
   std::stack<std::string> operation_stack;
   std::string postfix = "";
@@ -60,6 +63,9 @@ std::string ConvertToPostfix(std::string infix){
 
         default:
           tmp = infix[pos];
+          if (infix[pos] == '-' && (pos < 2 || infix[pos - 1] == '(' ||  infix[pos - 1] == ' ')){
+            tmp = '~';
+          }
           if (operation_priority.find(tmp) != operation_priority.end()){
             if (!operation_stack.empty() && (operation_priority[operation_stack.top()] >= operation_priority[tmp])){//?
               postfix += operation_stack.top() + " ";
@@ -82,7 +88,6 @@ std::unique_ptr<ICalculatable> MakeTree(std::istream& expression){
   std::stack<std::unique_ptr<ICalculatable>> operands_stack;
   int pos = 0;
   std::string tmp;
-
   while (getline(expression, tmp, ' '))
   {
     if (std::isdigit(tmp[0])){
@@ -110,6 +115,15 @@ std::unique_ptr<ICalculatable> MakeTree(std::istream& expression){
         operands_stack.pop();
         auto minus = std::make_unique<Minus>(Minus(std::move(left_operand), std::move(right_operand)));
         operands_stack.push(std::move(minus));
+        break;
+      }
+
+      case '~':
+      {
+        auto operand = std::move(operands_stack.top());
+        operands_stack.pop();
+        auto unary_minus = std::make_unique<UnaryMinus>(UnaryMinus(std::move(operand)));
+        operands_stack.push(std::move(unary_minus));
         break;
       }
 

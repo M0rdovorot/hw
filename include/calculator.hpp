@@ -35,6 +35,15 @@ public:
   virtual double Calculate();
 };
 
+class UnaryMinus: public ICalculatable
+{
+  private:
+  std::unique_ptr<ICalculatable> operand_;
+public:
+  UnaryMinus(std::unique_ptr<ICalculatable>);
+  virtual double Calculate();
+};
+
 class Divide: public ICalculatable
 {
   private:
