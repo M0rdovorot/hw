@@ -12,7 +12,9 @@ public:
   ICalculatable();//?
   explicit ICalculatable(double);
   explicit ICalculatable(int);
-  double getValue();
+  ICalculatable(const ICalculatable&);
+  double getValue() const;
+  virtual void Print();
 };
 
 class Plus: public ICalculatable
@@ -23,6 +25,7 @@ private:
 public:
   Plus(std::unique_ptr<ICalculatable>, std::unique_ptr<ICalculatable>);
   virtual double Calculate();
+  virtual void Print();
 };
 
 class Minus: public ICalculatable

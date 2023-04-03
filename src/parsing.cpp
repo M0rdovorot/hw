@@ -89,9 +89,18 @@ std::unique_ptr<ICalculatable> MakeTree(std::istream& expression){
     {
       case '+':
       {
-        auto right_operand = std::make_unique<ICalculatable>(operands_stack.top());
-        auto left_operand = std::make_unique<ICalculatable>(operands_stack.top());
+        auto right_operand = std::make_unique<ICalculatable>(ICalculatable(operands_stack.top()));
+        operands_stack.pop();
+        auto left_operand = std::make_unique<ICalculatable>(ICalculatable(operands_stack.top()));
+        operands_stack.pop();
+        if (left_operand.get() == nullptr) 
+          std::cout << "Left LOL\n"; 
+        else {
+          std::cout << "here1\n";
+        }
+        if (right_operand) std::cout << "Right LOL\n"; else std::cout << "here2\n";
         Plus plus(std::move(left_operand), std::move(right_operand));
+        //std::cout << plus.Calculate() << std::endl;
         operands_stack.push(plus);
         break;
       }
@@ -99,7 +108,9 @@ std::unique_ptr<ICalculatable> MakeTree(std::istream& expression){
       case '-':
       {
         auto right_operand = std::make_unique<ICalculatable>(operands_stack.top());
+        operands_stack.pop();
         auto left_operand = std::make_unique<ICalculatable>(operands_stack.top());
+        operands_stack.pop();
         Minus minus(std::move(left_operand), std::move(right_operand));
         operands_stack.push(minus);
         break;
@@ -108,7 +119,9 @@ std::unique_ptr<ICalculatable> MakeTree(std::istream& expression){
       case '/':
       {
         auto right_operand = std::make_unique<ICalculatable>(operands_stack.top());
+        operands_stack.pop();
         auto left_operand = std::make_unique<ICalculatable>(operands_stack.top());
+        operands_stack.pop();
         Divide divide(std::move(left_operand), std::move(right_operand));
         operands_stack.push(divide);
         break;
@@ -117,12 +130,14 @@ std::unique_ptr<ICalculatable> MakeTree(std::istream& expression){
       {
         if (tmp == "arctg"){
           auto operand = std::make_unique<ICalculatable>(operands_stack.top());
+          operands_stack.pop();
           Atan arctg(std::move(operand));
           operands_stack.push(arctg);
           break;
         }
         if (tmp == "abs"){
           auto operand = std::make_unique<ICalculatable>(operands_stack.top());
+          operands_stack.pop();
           Abs absolute(std::move(operand));
           operands_stack.push(absolute);
           break;
@@ -131,6 +146,10 @@ std::unique_ptr<ICalculatable> MakeTree(std::istream& expression){
     }
   }
   
+  //std::unique_ptr<Plus> root = std::dynamic_pointer_cast<std::unique_ptr<Plus>>(std::make_unique<ICalculatable>(operands_stack.top()));
   auto root = std::make_unique<ICalculatable>(operands_stack.top());
+  std::cout << operands_stack.top().Calculate() << std::endl;
+  //std::cout << root.get()->Calculate() << std::endl;
+  //return std::move(root);
   return std::move(root);
 }

@@ -1,4 +1,5 @@
 #include "calculator.hpp"
+#include <iostream> // LOL
 
 ICalculatable::ICalculatable(){};
 
@@ -6,7 +7,7 @@ ICalculatable::ICalculatable(double value): value_(value) {};
 
 ICalculatable::ICalculatable(int value): value_((double)value){};
 
-double ICalculatable::getValue()
+double ICalculatable::getValue() const
 {
   return value_;
 }
@@ -15,6 +16,13 @@ double ICalculatable::Calculate()
 {
   return value_;
 }
+
+void ICalculatable::Print() // LOL
+{
+  std::cout << "ICalculatable" << std::endl;
+}
+
+ICalculatable::ICalculatable(const ICalculatable& object): value_(object.getValue()) {}
 
 
 
@@ -27,6 +35,12 @@ double Plus::Calculate()
 {
   return left_operand_->Calculate() + right_operand_->Calculate();
 }
+
+void Plus::Print() //LOL
+{
+  std::cout << "Plus" << std::endl;
+}
+
 
 
 

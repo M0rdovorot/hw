@@ -12,7 +12,7 @@ int main(int argc, char* argv[]){
   std::string expression = argv[1];
   try{
     std::istringstream postfix_expression(ConvertToPostfix(expression));
-    auto root = std::make_unique<ICalculatable>(MakeTree(postfix_expression));
+    auto root = std::move(MakeTree(postfix_expression));
     std::cout << root->Calculate() << std::endl;
   }
   catch(const char* error_message){
