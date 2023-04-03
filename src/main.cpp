@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "interface.hpp"
 #include "operations.hpp"
 #include "parsing.hpp"
 

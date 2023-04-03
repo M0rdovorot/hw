@@ -1,5 +1,5 @@
 #include "parsing.hpp"
-#include "calculator.hpp"
+#include "interface.hpp"
 #include "operations.hpp"
 
 std::string ConvertToPostfix(std::string infix){

@@ -6,7 +6,7 @@
 #include <stack>
 #include <iostream>
 
-#include "calculator.hpp"
+#include "interface.hpp"
 
 #define OPERATION_L_BRACKET_PRIORITY 0
 #define OPERATION_PLUS_PRIORITY 1
