@@ -18,3 +18,4 @@
 
 std::string ConvertToPostfix(std::string);
 std::unique_ptr<ICalculatable> MakeTree(std::istream& expression);
+bool Help(int argc, char* argv[]);

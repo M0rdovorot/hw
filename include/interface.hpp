@@ -3,14 +3,7 @@
 #include <memory>
 #include <cmath>
 
-class ICalculatable
-{
-private:
-  double value_;
+class ICalculatable {
 public:
-  virtual double Calculate(); 
-  ICalculatable();
-  explicit ICalculatable(double);
-  explicit ICalculatable(int);
-  double getValue() const;
+  virtual double Calculate() = 0; 
 };

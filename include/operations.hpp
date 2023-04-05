@@ -2,59 +2,63 @@
 
 #include "interface.hpp"
 
-class Plus: public ICalculatable
-{
-private:
+class Number : public ICalculatable {
+ public:
+  virtual double Calculate() override;
+  double getValue() const;
+  explicit Number(double);
+  explicit Number(int);
+ private:
+  double value_;
+};
+
+class Plus : public ICalculatable {
+ public:
+  explicit Plus(std::unique_ptr<ICalculatable>, std::unique_ptr<ICalculatable>);
+  virtual double Calculate() override;
+ private:
   std::unique_ptr<ICalculatable> left_operand_;
   std::unique_ptr<ICalculatable> right_operand_;
-public:
-  Plus(std::unique_ptr<ICalculatable>, std::unique_ptr<ICalculatable>);
-  virtual double Calculate();
 };
 
-class Minus: public ICalculatable
-{
-  private:
+class Minus : public ICalculatable {
+ public:
+  explicit Minus(std::unique_ptr<ICalculatable>, std::unique_ptr<ICalculatable>);
+  virtual double Calculate() override;
+ private:
   std::unique_ptr<ICalculatable> left_operand_;
   std::unique_ptr<ICalculatable> right_operand_;
-public:
-  Minus(std::unique_ptr<ICalculatable>, std::unique_ptr<ICalculatable>);
-  virtual double Calculate();
 };
 
-class UnaryMinus: public ICalculatable
-{
-  private:
+class UnaryMinus : public ICalculatable {
+ public:
+  explicit UnaryMinus(std::unique_ptr<ICalculatable>);
+  virtual double Calculate() override;
+ private:
   std::unique_ptr<ICalculatable> operand_;
-public:
-  UnaryMinus(std::unique_ptr<ICalculatable>);
-  virtual double Calculate();
 };
 
-class Divide: public ICalculatable
-{
-  private:
+class Divide : public ICalculatable {
+ public:
+  explicit Divide(std::unique_ptr<ICalculatable>, std::unique_ptr<ICalculatable>);
+  virtual double Calculate() override;
+ private:
   std::unique_ptr<ICalculatable> left_operand_;
   std::unique_ptr<ICalculatable> right_operand_;
-public:
-  Divide(std::unique_ptr<ICalculatable>, std::unique_ptr<ICalculatable>);
-  virtual double Calculate();
 };
 
-class Atan: public ICalculatable
-{
-  private:
+class Atan : public ICalculatable {
+ public:
+  explicit Atan(std::unique_ptr<ICalculatable>);
+  virtual double Calculate() override;
+ private:
   std::unique_ptr<ICalculatable> operand_;
-public:
-  Atan(std::unique_ptr<ICalculatable>);
-  virtual double Calculate();
 };
 
-class Abs: public ICalculatable
-{
-  private:
+class Abs : public ICalculatable {
+ public:
+  explicit Abs(std::unique_ptr<ICalculatable>);
+  virtual double Calculate() override;
+ private:
   std::unique_ptr<ICalculatable> operand_;
-public:
-  Abs(std::unique_ptr<ICalculatable>);
-  virtual double Calculate();
 };

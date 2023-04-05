@@ -1,72 +1,74 @@
 #include "interface.hpp"
 #include "operations.hpp"
 
-Plus::Plus(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand):
- left_operand_(std::move(left_operand)), right_operand_(std::move(right_operand))
-{
+Number::Number(double value): value_(value) {};
+
+Number::Number(int value): value_((double)value) {};
+
+double Number::getValue() const {
+  return value_;
 }
 
-double Plus::Calculate()
-{
+double Number::Calculate() {
+  return value_;
+}
+
+
+
+Plus::Plus(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand)
+    : left_operand_(std::move(left_operand)),
+      right_operand_(std::move(right_operand)) {
+}
+
+double Plus::Calculate() {
   return left_operand_->Calculate() + right_operand_->Calculate();
 }
 
 
 
-Minus::Minus(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand):
- left_operand_(std::move(left_operand)), right_operand_(std::move(right_operand))
-{
+Minus::Minus(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand)
+    : left_operand_(std::move(left_operand)),
+      right_operand_(std::move(right_operand)) {
 }
 
-double Minus::Calculate()
-{
+double Minus::Calculate() {
   return left_operand_->Calculate() - right_operand_->Calculate();
 }
 
 
 
-UnaryMinus::UnaryMinus(std::unique_ptr<ICalculatable> operand):
- operand_(std::move(operand))
-{
+UnaryMinus::UnaryMinus(std::unique_ptr<ICalculatable> operand) : operand_(std::move(operand)) {
 }
 
-double UnaryMinus::Calculate()
-{
+double UnaryMinus::Calculate() {
   return -operand_->Calculate();
 }
 
 
 
-Divide::Divide(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand):
- left_operand_(std::move(left_operand)), right_operand_(std::move(right_operand))
-{
+Divide::Divide(std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand)
+    : left_operand_(std::move(left_operand)),
+      right_operand_(std::move(right_operand)) {
 }
 
-double Divide::Calculate()
-{
+double Divide::Calculate() {
   return left_operand_->Calculate() / right_operand_->Calculate();
 }
 
 
 
-Atan::Atan(std::unique_ptr<ICalculatable> operand):
- operand_(std::move(operand))
-{
+Atan::Atan(std::unique_ptr<ICalculatable> operand) : operand_(std::move(operand)) {
 }
 
-double Atan::Calculate()
-{
+double Atan::Calculate() {
   return std::atan(operand_->Calculate());
 }
 
 
 
-Abs::Abs(std::unique_ptr<ICalculatable> operand):
- operand_(std::move(operand))
-{
+Abs::Abs(std::unique_ptr<ICalculatable> operand) : operand_(std::move(operand)) {
 }
 
-double Abs::Calculate()
-{
+double Abs::Calculate() {
   return std::abs(operand_->Calculate());
 }
