@@ -3,7 +3,7 @@
 
 Number::Number(double value): value_(value) {};
 
-Number::Number(int value): value_((double)value) {};
+Number::Number(int value): value_(value) {};
 
 double Number::getValue() const {
   return value_;

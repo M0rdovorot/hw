@@ -2,7 +2,7 @@
 #include "interface.hpp"
 #include "operations.hpp"
 
-void CheckAndPushOperation(std::string& infix, std::string& postfix, int& pos, std::stack<std::string>& operation_stack){
+void CheckAndPushOperation(std::string& infix, std::vector<std::string>& postfix, int& pos, std::stack<std::string>& operation_stack){
   if (pos < infix.size()) {
     switch (infix[pos]) {
       case '(':
@@ -12,7 +12,7 @@ void CheckAndPushOperation(std::string& infix, std::string& postfix, int& pos, s
 
       case ')':
         while (!operation_stack.empty() && operation_stack.top() != "(") {
-          postfix += operation_stack.top() + " ";
+          postfix.push_back(operation_stack.top());
           operation_stack.pop();
         }
 
@@ -30,12 +30,12 @@ void CheckAndPushOperation(std::string& infix, std::string& postfix, int& pos, s
       default:
         std::string tmp;
         tmp = infix[pos];
-        if (infix[pos] == '-' && (pos < 2 || infix[pos - 1] == '(' ||  infix[pos - 1] == ' ')) {
+        if (infix[pos] == '-' && (pos < 2 || infix[pos - 1] == '(')) {
           tmp = '~';
         }
-        if (operation_priority.find(tmp) != operation_priority.end()) {
-          if (!operation_stack.empty() && (operation_priority[operation_stack.top()] >= operation_priority[tmp])) {
-            postfix += operation_stack.top() + " ";
+        if (kOperationPriority.find(tmp) != kOperationPriority.end()) {
+          if (!operation_stack.empty() && (kOperationPriority[operation_stack.top()] >= kOperationPriority[tmp])) {
+            postfix.push_back(operation_stack.top());
             operation_stack.pop();
           }
           operation_stack.push(tmp);
@@ -45,47 +45,55 @@ void CheckAndPushOperation(std::string& infix, std::string& postfix, int& pos, s
   }  
 }
 
-std::string ConvertToPostfix(std::string infix) {
+std::vector<std::string> ConvertToPostfix(std::string infix) {
 
   std::stack<std::string> operation_stack;
-  std::string postfix = "";
+  std::vector<std::string> postfix;
   int pos = 0;
   while(pos < infix.size()) {
     std::string tmp = "";
 
     while (std::isdigit(infix[pos])) {
-      postfix += infix[pos++];
+      tmp += infix[pos++];
     }
     if (std::isdigit(infix[pos - 1])) {
-      postfix += " ";
+      postfix.push_back(tmp);
     }
 
+    tmp = "";
     while (pos < infix.size() && std::islower(infix[pos])) {
       tmp += infix[pos++];
     }
-    if (tmp == "arctg") {
+    if (tmp == kArctg) {
       operation_stack.push(tmp);
-      tmp = "";
     }
-    if (tmp == "abs") {
+    if (tmp == kAbs) {
       operation_stack.push(tmp);
-      tmp = "";
     }
+
     CheckAndPushOperation(infix, postfix, pos, operation_stack);
   }
   while (!operation_stack.empty()) {
-    postfix += operation_stack.top() + " ";
+    postfix.push_back(operation_stack.top());
     operation_stack.pop();
   }
   return postfix;
 }
 
-std::unique_ptr<ICalculatable> MakeTree(std::istream& expression) {
+bool IsDigit(std::string str) {
+  for (int i = 0; i < str.size(); ++i) {
+    if (!std::isdigit(str[i])) return false;
+  }
+  return true;
+}
+
+std::unique_ptr<ICalculatable> MakeTree(std::vector<std::string>& expression) {
   std::stack<std::unique_ptr<ICalculatable>> operands_stack;
   int pos = 0;
   std::string tmp;
-  while (getline(expression, tmp, ' ')) {
-    if (std::isdigit(tmp[0])) {
+  for (int i = 0; i < expression.size(); ++i) {
+    tmp = expression[i];
+    if (IsDigit(tmp)) {
       operands_stack.push(std::make_unique<Number>(stoi(tmp)));
       continue;
     }
@@ -128,24 +136,29 @@ std::unique_ptr<ICalculatable> MakeTree(std::istream& expression) {
         break;
       }
       case 'a': {
-        if (tmp == "arctg") {
+        if (tmp == kArctg) {
           auto operand = std::move(operands_stack.top());
           operands_stack.pop();
           auto arctg = std::make_unique<Atan>(Atan(std::move(operand)));
           operands_stack.push(std::move(arctg));
           break;
         }
-        if (tmp == "abs") {
+        if (tmp == kAbs) {
           auto operand = std::move(operands_stack.top());
           operands_stack.pop();
           auto absolute = std::make_unique<Abs>(Abs(std::move(operand)));
           operands_stack.push(std::move(absolute));
           break;
         }
+        throw "wrong expression";
       }
+      default: {
+        throw "wrong expression";
+      }
+
     }
   }
-  
+  if (operands_stack.size() > 1) throw operands_stack.size();
   return std::move(operands_stack.top());
 }
 
