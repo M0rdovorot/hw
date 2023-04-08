@@ -16,6 +16,8 @@
 #define OPERATION_ARCTG_PRIORITY 3
 #define OPERATION_ABS_PRIORITY 3
 #define OPERATION_UNARY_MINUS_PRIORITY 3
+#define OPERATION_TYPE_BINARY 'b'
+#define OPERATION_TYPE_UNARY 'u'
 
 inline constexpr std::string_view kLBracket = "(";
 inline constexpr std::string_view kRBracket = ")";
@@ -34,6 +36,15 @@ static std::map<std::string_view, int> kOperationPriority = {
   {kArctg, OPERATION_ARCTG_PRIORITY},
   {kAbs, OPERATION_ABS_PRIORITY},
   {kUnaryMinus, OPERATION_UNARY_MINUS_PRIORITY}
+};
+
+static std::map<std::string_view, int> kOperationType = {
+  {kPlus, OPERATION_TYPE_BINARY}, 
+  {kMinus, OPERATION_TYPE_BINARY}, 
+  {kDivide, OPERATION_TYPE_BINARY}, 
+  {kArctg, OPERATION_TYPE_UNARY},
+  {kAbs, OPERATION_TYPE_UNARY},
+  {kUnaryMinus, OPERATION_TYPE_UNARY}
 };
 
 std::vector<std::string> ConvertToPostfix(std::string);

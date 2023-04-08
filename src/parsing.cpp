@@ -87,6 +87,53 @@ bool IsDigit(std::string str) {
   return true;
 }
 
+void PushBinary(std::stack<std::unique_ptr<ICalculatable>>& operands_stack, std::string& operation, std::unique_ptr<ICalculatable> left_operand, std::unique_ptr<ICalculatable> right_operand) {
+  switch (operation[0])
+  {
+    case '/': {
+      operands_stack.push(std::move(std::make_unique<Divide>(Divide(std::move(left_operand), std::move(right_operand)))));
+      break;
+    }
+
+    case '+': {
+      operands_stack.push(std::move(std::make_unique<Plus>(Plus(std::move(left_operand), std::move(right_operand)))));
+      break;
+    }
+
+    case '-': {
+      operands_stack.push(std::move(std::make_unique<Minus>(Minus(std::move(left_operand), std::move(right_operand)))));
+      break;
+    }
+  }
+}
+
+void PushUnary(std::stack<std::unique_ptr<ICalculatable>>& operands_stack, std::string& operation, std::unique_ptr<ICalculatable> operand) {
+  switch (operation[0])
+  {
+    case '~': {
+      operands_stack.push(std::move(std::make_unique<UnaryMinus>(UnaryMinus(std::move(operand)))));
+      break;
+    }
+
+    case 'a': {
+      if (operation == kArctg) {
+        operands_stack.push(std::move(std::make_unique<Atan>(Atan(std::move(operand)))));
+        break;
+      }
+
+      if (operation == kAbs) {
+        operands_stack.push(std::move(std::make_unique<Abs>(Abs(std::move(operand)))));
+        break;
+      }
+      throw "wrong expression";
+    }
+
+    default: {
+      throw "wrong expression";
+    }
+  }
+}
+
 std::unique_ptr<ICalculatable> MakeTree(std::vector<std::string>& expression) {
   std::stack<std::unique_ptr<ICalculatable>> operands_stack;
   int pos = 0;
@@ -97,65 +144,22 @@ std::unique_ptr<ICalculatable> MakeTree(std::vector<std::string>& expression) {
       operands_stack.push(std::make_unique<Number>(stoi(tmp)));
       continue;
     }
-    switch (tmp[0]) {
-      case '+': {
+    switch (kOperationType[tmp]) {
+      case OPERATION_TYPE_BINARY: {
         auto right_operand = std::move(operands_stack.top());
         operands_stack.pop();
         auto left_operand = std::move(operands_stack.top());
         operands_stack.pop();
-        auto plus = std::make_unique<Plus>(Plus(std::move(left_operand), std::move(right_operand)));
-        operands_stack.push(std::move(plus));
+        PushBinary(operands_stack, tmp, std::move(left_operand), std::move(right_operand));
         break;
       }
 
-      case '-': {
-        auto right_operand = std::move(operands_stack.top());
-        operands_stack.pop();
-        auto left_operand = std::move(operands_stack.top());
-        operands_stack.pop();
-        auto minus = std::make_unique<Minus>(Minus(std::move(left_operand), std::move(right_operand)));
-        operands_stack.push(std::move(minus));
-        break;
-      }
-
-      case '~': {
+      case OPERATION_TYPE_UNARY: {
         auto operand = std::move(operands_stack.top());
         operands_stack.pop();
-        auto unary_minus = std::make_unique<UnaryMinus>(UnaryMinus(std::move(operand)));
-        operands_stack.push(std::move(unary_minus));
+        PushUnary(operands_stack, tmp, std::move(operand));
         break;
       }
-
-      case '/': {
-        auto right_operand = std::move(operands_stack.top());
-        operands_stack.pop();
-        auto left_operand = std::move(operands_stack.top());
-        operands_stack.pop();
-        auto divide = std::make_unique<Divide>(Divide(std::move(left_operand), std::move(right_operand)));
-        operands_stack.push(std::move(divide));
-        break;
-      }
-      case 'a': {
-        if (tmp == kArctg) {
-          auto operand = std::move(operands_stack.top());
-          operands_stack.pop();
-          auto arctg = std::make_unique<Atan>(Atan(std::move(operand)));
-          operands_stack.push(std::move(arctg));
-          break;
-        }
-        if (tmp == kAbs) {
-          auto operand = std::move(operands_stack.top());
-          operands_stack.pop();
-          auto absolute = std::make_unique<Abs>(Abs(std::move(operand)));
-          operands_stack.push(std::move(absolute));
-          break;
-        }
-        throw "wrong expression";
-      }
-      default: {
-        throw "wrong expression";
-      }
-
     }
   }
   if (operands_stack.size() > 1) throw operands_stack.size();
