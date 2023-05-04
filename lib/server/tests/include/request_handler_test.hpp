@@ -23,6 +23,8 @@ public:
   MOCK_METHOD(Form, getUserForm, (unsigned id), (override));
   MOCK_METHOD(std::vector<Form>, getRecommendForms, (Form), (override));
   MOCK_METHOD(void, editRecommendations, (unsigned, std::vector<Profile>&), (override));
+  MOCK_METHOD(void, editUser, (User), (override));
+  MOCK_METHOD(void, editForm, (Form), (override));
 };
 
 class GMockRecommendation : public IRecommendation {

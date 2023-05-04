@@ -6,8 +6,9 @@
 
 class IRequestHandler {
 public:
-  virtual void ReadRequest(std::string json) = 0;
+  virtual boost::beast::http::response<boost::beast::http::string_body> ReadRequest(std::string json) = 0;
 private:
+  virtual boost::beast::http::response<boost::beast::http::string_body> GenerateResponse() = 0;
   virtual void JsonParser(std::string json) = 0;
   virtual void CalculateRecommendations(Profile& profile, std::vector<Profile>& recommended_profiles) = 0;
 };
@@ -15,8 +16,9 @@ private:
 class RequestHandler : public IRequestHandler {
 public:
   RequestHandler(std::shared_ptr<IDatabaseManager> database_manager, std::shared_ptr<IRecommendation> recommendation) {}
-  virtual void ReadRequest(std::string json) override {}
+  virtual boost::beast::http::response<boost::beast::http::string_body> ReadRequest(std::string json) override {return boost::beast::http::response<boost::beast::http::string_body>(); }
 private:
+  virtual boost::beast::http::response<boost::beast::http::string_body> GenerateResponse() override {return boost::beast::http::response<boost::beast::http::string_body>();}
   virtual void JsonParser(std::string json) override {}
   virtual void CalculateRecommendations(Profile& profile, std::vector<Profile>& recommended_profiles) override {}
   /*Request Parametres*/

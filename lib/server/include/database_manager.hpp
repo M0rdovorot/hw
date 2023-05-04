@@ -45,6 +45,8 @@ public:
   virtual Form getUserForm(unsigned) = 0; 
   virtual std::vector<Form> getRecommendForms(Form) = 0;
   virtual void editRecommendations(unsigned, std::vector<Profile>&) = 0;
+  virtual void editUser(User user) = 0;
+  virtual void editForm(Form Form) = 0;
 };
 
 class IRecommendation {
